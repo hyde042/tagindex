@@ -56,7 +56,7 @@ func (t *Index) Query(tags []string, limit int) QueryResult {
 		qBloom = makeBloom(qTagIDs, bloomFilterK)
 	)
 	for _, me := range t.data {
-		if me.Order <= 0 {
+		if me.Order < 0 {
 			continue
 		}
 		if !me.bloom.contains(qBloom) {
