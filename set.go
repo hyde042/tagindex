@@ -12,10 +12,10 @@ func setContains(a, b []uint32) bool {
 	if bl == 0 {
 		return true
 	}
-	var i, j int
 	if b[bl-1] > a[al-1] {
 		return false
 	}
+	var i, j int
 	for i < bl {
 		if b[i] == a[j] {
 			i++
