@@ -93,7 +93,7 @@ func (t *Index) Put(e ...Entry) {
 			t.data = append(t.data, me)
 		}
 	}
-	t.commit()
+	t.commit() // TODO: lazy/debounced committing
 }
 
 func (t *Index) commit() {
