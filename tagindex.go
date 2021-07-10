@@ -93,10 +93,9 @@ func (t *Index) Put(e ...Entry) {
 			t.data = append(t.data, me)
 		}
 	}
-	t.commit() // TODO: lazy/debounced committing
 }
 
-func (t *Index) commit() {
+func (t *Index) Commit() {
 	sort.Slice(t.data, func(i, j int) bool {
 		if t.data[i].Order == t.data[j].Order {
 			return t.data[i].ID < t.data[j].ID
