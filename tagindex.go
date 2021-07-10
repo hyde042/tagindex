@@ -25,6 +25,7 @@ type Index struct {
 	data         []entry
 	dataIndex    map[string]int
 	tagIDs       map[string]uint32
+	tagCounts    map[string]int // TODO: more optimal tag store (prefix map?)
 	isDirty      bool
 	orderCounter int64
 }
@@ -99,11 +100,17 @@ func (t *Index) Put(e ...Entry) {
 				me.isDeleted = me.Order < 0
 				me.Order = t.data[i].Order
 			}
+
+			// TODO: update tag counts
+
 			t.data[i] = me
 		} else {
 			if me.Order == 0 {
 				t.orderCounter++
 				me.Order = -t.orderCounter
+			}
+			for _, tag := range me.Tags {
+				t.tagCounts[tag]++
 			}
 			t.dataIndex[e.ID] = len(t.data)
 			t.data = append(t.data, me)
