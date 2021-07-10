@@ -25,7 +25,6 @@ type Index struct {
 	data         []entry
 	dataIndex    map[string]int
 	tagIDs       map[string]uint32
-	tagIDCount   uint32
 	isDirty      bool
 	orderCounter int64
 }
@@ -146,9 +145,7 @@ func (t *Index) resolveTagIDs(tags []string, create bool) ([]uint32, bool) {
 			if !create {
 				return nil, false
 			}
-			t.tagIDCount++
-			id = t.tagIDCount
-			t.tagIDs[tag] = id
+			t.tagIDs[tag] = uint32(len(t.tagIDs))
 		}
 		ids = append(ids, id)
 	}
