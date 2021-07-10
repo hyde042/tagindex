@@ -96,6 +96,9 @@ func (t *Index) Put(e ...Entry) {
 }
 
 func (t *Index) Commit() {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
 	sort.Slice(t.data, func(i, j int) bool {
 		if t.data[i].Order == t.data[j].Order {
 			return t.data[i].ID < t.data[j].ID
