@@ -15,17 +15,19 @@ type Entry struct {
 
 type entry struct {
 	Entry
-	tagIDs []uint32
-	bloom  Bloom
+	tagIDs    []uint32
+	bloom     Bloom
+	isDeleted bool
 }
 
 type Index struct {
-	mu         sync.RWMutex
-	data       []entry
-	dataIndex  map[string]int
-	tagIDs     map[string]uint32
-	tagIDCount uint32
-	isDirty    bool
+	mu           sync.RWMutex
+	data         []entry
+	dataIndex    map[string]int
+	tagIDs       map[string]uint32
+	tagIDCount   uint32
+	isDirty      bool
+	orderCounter int64
 }
 
 func New() *Index {
@@ -59,7 +61,7 @@ func (t *Index) Query(tags []string, limit int) QueryResult {
 		qBloom = MakeBloom(qTagIDs, bloomFilterK)
 	)
 	for _, me := range t.data {
-		if me.Order < 0 {
+		if me.isDeleted {
 			continue
 		}
 		if !me.bloom.Contains(qBloom) {
@@ -94,8 +96,17 @@ func (t *Index) Put(e ...Entry) {
 			}
 		)
 		if i, ok := t.dataIndex[e.ID]; ok {
+			if me.Order <= 0 {
+				me.isDeleted = me.Order < 0
+				me.Order = t.data[i].Order
+			}
 			t.data[i] = me
 		} else {
+			if me.Order == 0 {
+				t.orderCounter++
+				me.Order = -t.orderCounter
+			}
+			t.dataIndex[e.ID] = len(t.data)
 			t.data = append(t.data, me)
 		}
 	}
