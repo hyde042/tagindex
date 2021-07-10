@@ -1,5 +1,7 @@
 package tagindex
 
+// TODO: move to internal package
+
 // SetContains returns true if a has all elements of b.
 // input slice values must be sorted from lowest to highest.
 func SetContains(a, b []uint32) bool {

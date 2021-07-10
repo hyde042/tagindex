@@ -6,6 +6,8 @@ import (
 	"github.com/cespare/xxhash"
 )
 
+// TODO: move to internal package
+
 type Bloom [4]uint64
 
 func MakeBloom(data []uint32, k int) Bloom {
