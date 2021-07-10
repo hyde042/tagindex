@@ -16,7 +16,7 @@ type Entry struct {
 type entry struct {
 	Entry
 	tagIDs []uint32
-	bloom  bloom
+	bloom  Bloom
 }
 
 type Index struct {
@@ -53,13 +53,13 @@ func (t *Index) Query(tags []string, limit int) QueryResult {
 	}
 	var (
 		qRes   = QueryResult{Data: make([]Entry, 0, preAlloc)}
-		qBloom = makeBloom(qTagIDs, bloomFilterK)
+		qBloom = MakeBloom(qTagIDs, bloomFilterK)
 	)
 	for _, me := range t.data {
 		if me.Order < 0 {
 			continue
 		}
-		if !me.bloom.contains(qBloom) {
+		if !me.bloom.Contains(qBloom) {
 			continue
 		}
 		if !setContains(me.tagIDs, qTagIDs) {
@@ -84,7 +84,7 @@ func (t *Index) Put(e ...Entry) {
 			me        = entry{
 				Entry:  e,
 				tagIDs: tagIDs,
-				bloom:  makeBloom(tagIDs, bloomFilterK),
+				bloom:  MakeBloom(tagIDs, bloomFilterK),
 			}
 		)
 		if i, ok := t.dataIndex[e.ID]; ok {

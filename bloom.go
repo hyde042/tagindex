@@ -6,13 +6,13 @@ import (
 	"github.com/cespare/xxhash"
 )
 
-type bloom [4]uint64
+type Bloom [4]uint64
 
-func makeBloom(data []uint32, k int) bloom {
+func MakeBloom(data []uint32, k int) Bloom {
 	var (
 		h = xxhash.New() // fnv.New64a()
 		b [4]byte
-		f bloom
+		f Bloom
 	)
 	for i, n := range data {
 		if i > 0 {
@@ -31,6 +31,6 @@ func makeBloom(data []uint32, k int) bloom {
 	return f
 }
 
-func (t bloom) contains(o bloom) bool {
+func (t Bloom) Contains(o Bloom) bool {
 	return t[0]&o[0] == o[0] && t[1]&o[1] == o[1] && t[2]&o[2] == o[2] && t[3]&o[3] == o[3]
 }
