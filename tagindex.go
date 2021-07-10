@@ -14,7 +14,7 @@ type Entry struct {
 }
 
 type entry struct {
-	Entry
+	Entry     // TODO: avoid storing the full entity with all the tags etc.
 	tagIDs    []uint32
 	bloom     Bloom
 	isDeleted bool
