@@ -82,6 +82,9 @@ func (t *Index) Put(e ...Entry) {
 	defer t.mu.Unlock()
 
 	for _, e := range e {
+
+		// TODO: compare to existing entry to avoid pointless commits
+
 		var (
 			tagIDs, _ = t.resolveTagIDs(e.Tags, true)
 			me        = entry{
