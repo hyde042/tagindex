@@ -25,6 +25,7 @@ type Index struct {
 	dataIndex  map[string]int
 	tagIDs     map[string]uint32
 	tagIDCount uint32
+	isDirty    bool
 }
 
 func New() *Index {
@@ -40,6 +41,8 @@ type QueryResult struct {
 }
 
 func (t *Index) Query(tags []string, limit int) QueryResult {
+	t.autoCommit()
+
 	t.mu.RLock()
 	defer t.mu.RUnlock()
 
@@ -93,6 +96,7 @@ func (t *Index) Put(e ...Entry) {
 			t.data = append(t.data, me)
 		}
 	}
+	t.isDirty = true
 }
 
 func (t *Index) Commit() {
@@ -110,6 +114,17 @@ func (t *Index) Commit() {
 	}
 	for i, e := range t.data {
 		t.dataIndex[e.ID] = i
+	}
+	t.isDirty = false
+}
+
+func (t *Index) autoCommit() {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	if t.isDirty {
+		t.Commit()
+		t.isDirty = false
 	}
 }
 
