@@ -6,16 +6,21 @@ import (
 	"github.com/hyde042/tagindex"
 )
 
-func TestFilter(t *testing.T) {
-	t.Log(tagindex.MakeBloom([]uint32{0, 63, 64, 255, 257}, 1))
-	t.Log(tagindex.MakeBloom([]uint32{0, 63, 64, 255, 257}, 2))
-	t.Log(tagindex.MakeBloom([]uint32{0, 63, 64, 255, 257}, 3))
-	t.Log(tagindex.MakeBloom([]uint32{0, 63, 64, 255, 257}, 10))
-	t.Log(tagindex.MakeBloom([]uint32{0, 63, 64, 255, 257}, 100))
+func TestBloom(t *testing.T) {
+	t.Log(makeBloom(1, 0, 63, 64, 255, 257))
+	t.Log(makeBloom(2, 0, 63, 64, 255, 257))
+	t.Log(makeBloom(3, 0, 63, 64, 255, 257))
+	t.Log(makeBloom(10, 0, 63, 64, 255, 257))
+	t.Log(makeBloom(100, 0, 63, 64, 255, 257))
 
-	t.Log(tagindex.MakeBloom([]uint32{0, 63, 64, 255, 257}, 9).Contains(tagindex.MakeBloom([]uint32{}, 9)))
-	t.Log(tagindex.MakeBloom([]uint32{0, 63, 64, 255, 257}, 9).Contains(tagindex.MakeBloom([]uint32{0}, 9)))
-	t.Log(tagindex.MakeBloom([]uint32{0, 63, 64, 255, 257}, 9).Contains(tagindex.MakeBloom([]uint32{0, 64}, 9)))
-	t.Log(tagindex.MakeBloom([]uint32{0, 63, 64, 255, 257}, 9).Contains(tagindex.MakeBloom([]uint32{100, 150}, 9)))
-	t.Log(tagindex.MakeBloom([]uint32{0, 63, 64, 255, 257}, 9).Contains(tagindex.MakeBloom([]uint32{1}, 9)))
+	testBloom := makeBloom(9, 0, 63, 64, 255, 257)
+	assert(t, "1", testBloom.Contains(makeBloom(9)), true)
+	assert(t, "2", testBloom.Contains(makeBloom(9, 0)), true)
+	assert(t, "3", testBloom.Contains(makeBloom(9, 0, 64)), true)
+	assert(t, "4", testBloom.Contains(makeBloom(9, 100, 150)), false)
+	assert(t, "5", testBloom.Contains(makeBloom(9, 1)), false)
+}
+
+func makeBloom(k int, values ...uint32) tagindex.Bloom {
+	return tagindex.MakeBloom(values, k)
 }

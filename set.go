@@ -1,7 +1,8 @@
 package tagindex
 
-// input slice values must be sorted from lowest to highest
-func setContains(a, b []uint32) bool {
+// SetContains returns true if a has all elements of b.
+// input slice values must be sorted from lowest to highest.
+func SetContains(a, b []uint32) bool {
 	var (
 		al = len(a)
 		bl = len(b)

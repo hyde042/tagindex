@@ -62,7 +62,7 @@ func (t *Index) Query(tags []string, limit int) QueryResult {
 		if !me.bloom.Contains(qBloom) {
 			continue
 		}
-		if !setContains(me.tagIDs, qTagIDs) {
+		if !SetContains(me.tagIDs, qTagIDs) {
 			continue
 		}
 		qRes.TotalCount++
