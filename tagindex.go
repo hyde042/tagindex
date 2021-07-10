@@ -41,7 +41,7 @@ type QueryResult struct {
 }
 
 func (t *Index) Query(tags []string, limit int) QueryResult {
-	t.autoCommit()
+	t.Commit()
 
 	t.mu.RLock()
 	defer t.mu.RUnlock()
@@ -103,6 +103,9 @@ func (t *Index) Commit() {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 
+	if !t.isDirty {
+		return
+	}
 	sort.Slice(t.data, func(i, j int) bool {
 		if t.data[i].Order == t.data[j].Order {
 			return t.data[i].ID < t.data[j].ID
@@ -116,16 +119,6 @@ func (t *Index) Commit() {
 		t.dataIndex[e.ID] = i
 	}
 	t.isDirty = false
-}
-
-func (t *Index) autoCommit() {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-
-	if t.isDirty {
-		t.Commit()
-		t.isDirty = false
-	}
 }
 
 func (t *Index) resolveTagIDs(tags []string, create bool) ([]uint32, bool) {
