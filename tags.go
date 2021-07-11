@@ -1,6 +1,9 @@
 package tagindex
 
-import "sort"
+import (
+	"sort"	"strings"
+)
+
 
 type TagInfo struct {
 	Tag   string
@@ -10,7 +13,9 @@ type TagInfo struct {
 func (t *Index) Tags(prefix string, limit int) []TagInfo {
 	var res []TagInfo // TODO: smart pre-alloc
 	for tag, count := range t.tagCounts {
-		res = append(res, TagInfo{Tag: tag, Count: count})
+		if strings.HasPrefix(tag, prefix) {
+			res = append(res, TagInfo{Tag: tag, Count: count})
+		}
 	}
 	sort.SliceStable(res, func(i, j int) bool {
 		return res[i].Count > res[j].Count
