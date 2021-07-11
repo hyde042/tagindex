@@ -34,6 +34,7 @@ func New() *Index {
 	return &Index{
 		dataIndex: make(map[string]int, 1<<8),
 		tagIDs:    make(map[string]uint32, 1<<8),
+		tagCounts: make(map[string]int, 1<<8),
 	}
 }
 
