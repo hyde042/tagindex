@@ -1,9 +1,9 @@
 package tagindex
 
 import (
-	"sort"	"strings"
+	"sort"
+	"strings"
 )
-
 
 type TagInfo struct {
 	Tag   string
