@@ -153,7 +153,8 @@ func (t *Index) resolveTagIDs(tags []string, create bool) ([]uint32, bool) {
 			if !create {
 				return nil, false
 			}
-			t.tagIDs[tag] = uint32(len(t.tagIDs))
+			id = uint32(len(t.tagIDs) + 1)
+			t.tagIDs[tag] = id
 		}
 		ids = append(ids, id)
 	}
